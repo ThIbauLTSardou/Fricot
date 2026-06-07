@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "menus-app",
-    "slug": "menus-app",
+    "name": "Fricot",
+    "slug": "fricot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "fricot",
     "ios": {
       "supportsTablet": true
     },
@@ -19,7 +20,20 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "L'application accède à vos photos pour illustrer vos plats."
+        }
+      ],
+      "expo-web-browser",
+      "expo-font"
+    ]
   }
 }
