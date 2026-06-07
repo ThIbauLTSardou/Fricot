@@ -82,6 +82,8 @@ function AuthGate() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="group" options={{ headerShown: false }} />
+        <Stack.Screen name="settings" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
       </Stack>
     </>
   );
@@ -93,7 +95,7 @@ const s = StyleSheet.create({
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Recoleta: require("../assets/fonts/Recoleta-RegularDEMO.otf"),
+    DMSerifDisplay: require("@expo-google-fonts/dm-serif-display/400Regular/DMSerifDisplay_400Regular.ttf"),
   });
 
   if (!fontsLoaded) return null;

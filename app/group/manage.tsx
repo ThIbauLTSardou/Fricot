@@ -80,10 +80,9 @@ export default function ManageGroupScreen() {
     if (!user || !newGroupName.trim()) return;
     setCreateLoading(true);
     try {
-      const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
       const { data: gData, error: gError } = await supabase
         .from("groups")
-        .insert({ name: newGroupName.trim(), invite_code: inviteCode, owner_id: user.id })
+        .insert({ name: newGroupName.trim(), owner_id: user.id })
         .select("id")
         .single();
       if (gError) throw gError;
@@ -129,9 +128,9 @@ export default function ManageGroupScreen() {
     if (!groupId) return;
     setActionLoading(true);
     try {
-      const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-      await supabase.from("groups").update({ invite_code: newCode }).eq("id", groupId);
-      setGroup((g) => g ? { ...g, invite_code: newCode } : g);
+      const { data: newCode, error } = await supabase.rpc("regenerate_invite_code", { target_group_id: groupId });
+      if (error) throw error;
+      if (newCode) setGroup((g) => g ? { ...g, invite_code: newCode as string } : g);
     } finally {
       setActionLoading(false);
     }

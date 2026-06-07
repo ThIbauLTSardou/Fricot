@@ -66,7 +66,7 @@ export const radius = {
 };
 
 export const fontFamily = {
-  display: "Recoleta",
+  display: "DMSerifDisplay",
 };
 
 export const shadow = {

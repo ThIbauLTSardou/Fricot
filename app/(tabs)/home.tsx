@@ -84,11 +84,11 @@ export default function HomeScreen() {
           </Text>
         </View>
         <Pressable
-          onPress={() => router.push("/group/manage")}
+          onPress={() => router.push("/settings")}
           style={[s.groupBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
           hitSlop={8}
         >
-          <Ionicons name="people-outline" size={18} color={colors.textMuted} />
+          <Ionicons name="settings-outline" size={18} color={colors.textMuted} />
         </Pressable>
       </View>
 

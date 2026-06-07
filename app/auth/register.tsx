@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/lib/ThemeContext";
 import { spacing, radius, fontFamily } from "@/lib/theme";
 import { useAuthStore } from "@/store/useAuthStore";
+import { isPasswordValid, getPasswordError } from "@/lib/passwordStrength";
+import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
 
 export default function RegisterScreen() {
   const { colors } = useTheme();
@@ -32,8 +34,8 @@ export default function RegisterScreen() {
 
   async function handleRegister() {
     if (!email || !password || !confirm) { setError("Remplis tous les champs."); return; }
-    if (password !== confirm) { setError("Les mots de passe ne correspondent pas."); return; }
-    if (password.length < 6) { setError("Le mot de passe doit faire au moins 6 caractères."); return; }
+    const pwdError = getPasswordError(password, confirm);
+    if (pwdError) { setError(pwdError); return; }
     setError(null);
     setLoading(true);
     try {
@@ -112,6 +114,7 @@ export default function RegisterScreen() {
             secureTextEntry
             autoComplete="new-password"
           />
+          <PasswordStrengthIndicator password={password} />
           <TextInput
             style={[s.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
             placeholder="Confirmer le mot de passe"
@@ -122,9 +125,9 @@ export default function RegisterScreen() {
             autoComplete="new-password"
           />
           <TouchableOpacity
-            style={[s.primaryBtn, { backgroundColor: colors.primary }, loading && s.disabled]}
+            style={[s.primaryBtn, { backgroundColor: colors.primary }, (!isPasswordValid(password) || loading) && s.disabled]}
             onPress={handleRegister}
-            disabled={loading}
+            disabled={loading || !isPasswordValid(password)}
           >
             {loading
               ? <ActivityIndicator color="#fff" />

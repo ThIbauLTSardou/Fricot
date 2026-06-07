@@ -99,6 +99,25 @@ async function migrateLocalData() {
   }
 }
 
+// Extrait les tokens depuis le fragment (#) ou les query params (?),
+// selon le flow Supabase (PKCE met les tokens dans le fragment).
+async function exchangeOAuthCallback(callbackUrl: string): Promise<void> {
+  const url = new URL(callbackUrl);
+
+  // PKCE flow : tokens dans le fragment (#access_token=...&refresh_token=...)
+  const fragment = new URLSearchParams(url.hash.replace(/^#/, ""));
+  const accessToken = fragment.get("access_token") ?? url.searchParams.get("access_token");
+  const refreshToken = fragment.get("refresh_token") ?? url.searchParams.get("refresh_token");
+
+  if (accessToken && refreshToken) {
+    await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+  } else {
+    // Flow code (PKCE avec code_verifier) — laisser Supabase gérer l'échange
+    const { error } = await supabase.auth.exchangeCodeForSession(url.searchParams.get("code") ?? "");
+    if (error) throw error;
+  }
+}
+
 export const useAuthStore = create<AuthStore>((set, get) => ({
   session: null,
   user: null,
@@ -157,12 +176,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     if (data?.url) {
       const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
       if (result.type === "success" && result.url) {
-        const url = new URL(result.url);
-        const accessToken = url.searchParams.get("access_token");
-        const refreshToken = url.searchParams.get("refresh_token");
-        if (accessToken && refreshToken) {
-          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        }
+        await exchangeOAuthCallback(result.url);
       }
     }
   },
@@ -177,12 +191,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     if (data?.url) {
       const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
       if (result.type === "success" && result.url) {
-        const url = new URL(result.url);
-        const accessToken = url.searchParams.get("access_token");
-        const refreshToken = url.searchParams.get("refresh_token");
-        if (accessToken && refreshToken) {
-          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        }
+        await exchangeOAuthCallback(result.url);
       }
     }
   },

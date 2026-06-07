@@ -4,20 +4,6 @@ import { Octicons, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "@/lib/ThemeContext";
 import { radius } from "@/lib/theme";
 
-function HeaderRight() {
-  const { isDark, toggle, colors } = useTheme();
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Pressable onPress={() => router.push("/group/manage")} style={{ paddingHorizontal: 12 }} hitSlop={8}>
-        <Ionicons name="people" size={20} color={colors.text} />
-      </Pressable>
-      <Pressable onPress={toggle} style={{ paddingHorizontal: 12 }} hitSlop={8}>
-        <Ionicons name={isDark ? "sunny" : "moon"} size={20} color={colors.text} />
-      </Pressable>
-    </View>
-  );
-}
-
 type TabIconProps = { name: React.ComponentProps<typeof Octicons>["name"]; color: string | any; focused: boolean };
 
 function TabIcon({ name, color, focused }: TabIconProps) {
@@ -50,7 +36,6 @@ export default function TabsLayout() {
         headerTitleStyle: { fontWeight: "700", fontSize: 16, color: colors.text },
         headerShadowVisible: false,
         headerTintColor: colors.text,
-        headerRight: () => <HeaderRight />,
       }}
     >
       <Tabs.Screen
@@ -60,7 +45,6 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? "home-fill" : "home"} color={color} focused={focused} />
           ),
-          headerRight: () => <HeaderRight />,
         }}
       />
       <Tabs.Screen
