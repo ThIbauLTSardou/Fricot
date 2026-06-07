@@ -42,3 +42,8 @@ yarn-error.*
 /ios
 /android
 .mcp.json
+
+# EAS / Play Store secrets
+google-service-account.json
+*.keystore
+*.jks
